@@ -1,0 +1,28 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Selected product</th>
+        <th scope="col">Image</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+    </tr>
+    </thead>
+        {% for item in form %}
+        <form method="post">
+            {% csrf_token %}
+            <input hidden type="text" value="{{item.id}}" name="removefield">
+            <tbody>
+            <tr>
+                <th scope="row">{{item.product.productname}}</th>
+                <td><img src=" /media/{{item.product.productimage}}" alt="media/{{item.product.productimage}}" style="width: 40%; height: 200px;"></td>
+                <td>{% widthratio item.product.price 1 item.quantity %}</td>
+                <td>{{item.quantity}}</td>
+                <td><button type="submit" name="remove" value="remove" class="btn btn-danger">Remove</button></td>
+            </tr>
+            </tbody>
+        </form>
+        {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'shop/base.html' %}
+{% block title %} Admin view {% endblock %}
+{% block content %}
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="add_stock/" class="btn btn-success">New</a>
+</div>
+<table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Product name</th>
+                <th scope="col">Image</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+            </tr>
+            </thead>
+    {% for product in products %}
+    <form method="post">
+        {% csrf_token %}
+        <input hidden type="text" value="{{product.id}}" name="getedvalue" class="form-check-input">
+            <tbody>
+                <tr>
+                    <th scope="row">{{product.productname}}</th>
+                    <td><img src="/media/{{product.productimage}}" style="width: 40%; height: 200px;" alt="/media/{{product.productimage}}"></td>
+                    <td>{{product.description}}</td>
+                    <td>{{product.price}}</td>
+                    <td>{{product.quantity}}</td>
+                    <td><button type="submit" name="delete" value="delete" class="btn btn-danger">Delete</button></td>
+                    <td><button type="submit" name="edit" value="edit" class="btn btn-primary">Edit</button></td>
+                </tr>
+            </tbody>
+    </form>
+    {% endfor %}
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% if messages %}
+    {% for message in messages %}
+    <div id="msg" class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert" style="position: absolute; z-index: 1; top: 70px;
+  right: 15px;">
+        <h3>{{message}}</h3>
+    </div>
+<script>
+    setTimeout(function() {
+    $('#msg').fadeOut('fast');
+}, 1000);
+</script>
+<!--<script>-->
+<!--    alertify.set('notifier','position', 'top-right');-->
+<!--    alertify.success('Hello ');-->
+<!--</script>-->
+    {% endfor %}
+{% endif %}

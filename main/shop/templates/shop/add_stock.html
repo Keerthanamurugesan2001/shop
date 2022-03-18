@@ -1,0 +1,12 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Add stock {% endblock %}
+{% block content %}
+<form method="post" class="from-group" enctype="multipart/form-data" action="#">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">Add_stock</button>
+
+</form>
+{% endblock %}
