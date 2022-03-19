@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 import sys
 
@@ -20,20 +19,26 @@ def view_item(request):
             product_qty = int(request.POST.get('quantity'))
             if product_check:
                 if Cart.objects.filter(user=request.user.id, product=product_id):
-                    t = Cart.objects.get(product=product_id)
-
-                    if t.quantity < product_check.quantity:
+                    t = Cart.objects.get(user=request.user.id, product=product_id)
+                    print(t.quantity, product_check.quantity)
+                    if product_qty <= product_check.quantity:
                         t.quantity = product_qty
                         t.save()
                         messages.add_message(request, messages.SUCCESS, 'Product Added successfully')
                         return redirect('/')
                     else:
-                        messages.add_message(request, messages.WARNING,
-                                             'Only' + str(product_check.quantity) + 'is available')
-                        return redirect('/')
+                        if product_check.quantity == 0:
+                            messages.add_message(request, messages.WARNING,
+                                                 'Out of stock')
+                            return redirect('/')
+                        else:
+                            messages.add_message(request, messages.WARNING,
+                                                 'Only ' + str(product_check.quantity) + ' is available')
+                            return redirect('/')
                 else:
                     print()
                     Cart.objects.create(product=product_check, user=request.user, quantity=product_qty)
+
                     messages.add_message(request, messages.SUCCESS, 'Product Added successfully')
                     return redirect('/')
             else:
@@ -43,8 +48,8 @@ def view_item(request):
             messages.add_message(request, messages.WARNING, "your'e admin please Login to continue")
             return redirect('/login/')
         return render(request, 'shop/add_item_to_cart.html', {})
-
-    return render(request, "shop/view_item.html", {'products': products})
+    uname = request.user
+    return render(request, "shop/view_item.html", {'products': products, 'uname': uname})
 
 
 def admin_view(request):
@@ -71,6 +76,7 @@ def add_stock(request):
     if request.method == "POST":
         form = Addstock(request.POST, request.FILES)
         # see user is admin
+        print(request.user)
         if request.user.is_authenticated and request.user.is_admin:
             if form.is_valid():
                 user = request.user
@@ -93,18 +99,32 @@ def add_stock(request):
 
 
 def add_item_to_cart(request):
-    form = Cart.objects.all
+    form = Cart.objects.filter(user=request.user.id)
+    print(form)
     if request.method == 'POST':
         if request.user.is_authenticated and request.user.is_customer:
             if request.POST.get('remove'):
                 id = request.POST.get('removefield')
                 t = Cart.objects.get(id=id)
                 t.delete()
+            if request.POST.get('buy'):
+                val = request.POST.get('removefield')
+                t = Cart.objects.get(id=val)
+                qty = request.POST.get('buy')
+                print(qty)
+                product = Product.objects.get(id=qty)
+                product.quantity = product.quantity - t.quantity
+                product.save()
+                t.quantity=0
+                t.save()
+                messages.add_message(request, messages.SUCCESS, "Your'e BUY SUCCESSFULLY")
+                redirect('/add_item_to_cart')
         else:
             messages.add_message(request, messages.WARNING, "Your'e admin you can't change this stuff")
     else:
-        form = Cart.objects.all
-    return render(request, 'shop/add_item_to_cart.html', {'form': form})
+        form = Cart.objects.filter(user=request.user.id)
+    uname = request.user
+    return render(request, 'shop/add_item_to_cart.html', {'form': form, "uname": uname})
 
 
 def update_stock(request, id):
@@ -153,4 +173,3 @@ def update_stock(request, id):
     else:
         form = Addstock(initial=product_data)
     return render(request, 'shop/add_stock.html/', {'form': form})
-

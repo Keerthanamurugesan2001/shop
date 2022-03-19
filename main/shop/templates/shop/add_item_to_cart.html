@@ -1,4 +1,5 @@
 {% extends 'shop/base.html' %}
+{% block title %}welcome {{uname}}{% endblock %}
 {% block content %}
 <table class="table">
     <thead>
@@ -20,6 +21,7 @@
                 <td>{% widthratio item.product.price 1 item.quantity %}</td>
                 <td>{{item.quantity}}</td>
                 <td><button type="submit" name="remove" value="remove" class="btn btn-danger">Remove</button></td>
+                <td><button type="submit" name="buy" value="{{item.product.id}}" class="btn btn-success">Buy</button></td>
             </tr>
             </tbody>
         </form>

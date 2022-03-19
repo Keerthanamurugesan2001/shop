@@ -1,5 +1,6 @@
 {% extends 'shop/base.html' %}
 {% load static %}
+{% block title %}welcome {{uname}}{% endblock %}
 {% block content %}
     <div class="cards" style="display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -7,6 +8,7 @@
 		grid-gap: 1rem;">
 
     {% for product in products %}
+
         <form method = "post">
             {% csrf_token %}
                     <div class="card h-100" style="border: 2px solid #e7e7e7; border-radius: 4px; padding: .5rem;">

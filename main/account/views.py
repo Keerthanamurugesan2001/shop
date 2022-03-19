@@ -17,10 +17,12 @@ def register(response):
             obj = form.save(commit=False)
             obj.user = response.user
             obj.save()
-            print(form.cleaned_data['username'], form.cleaned_data['password1'])
-            return redirect('/home/')
+            if(response.user.is_customer):
+                return redirect('/')
+            else:
+                return redirect('/admin_view/')
         else:
-            print("invalid form")
+            messages.add_message(response, messages.SUCCESS, "Your'e BUY SUCCESSFULLY")
     else:
         form = RegisterForm()
 
@@ -42,7 +44,7 @@ def login_view(request):
                 login(request, user)
                 return redirect('/')
             else:
-                print("invalid credential")
+                messages.add_message(request, messages.SUCCESS, "username or password is incorrecr")
         else:
             msg = 'error in validating form'
 
