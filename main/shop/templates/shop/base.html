@@ -20,11 +20,11 @@
 
     <div class="sidenav">
         {% block sidebar %}
-        <a href="/">Home</a>
-        <a href = "/add_item_to_cart">CART</a>
-        <a href = "/register">Signup</a>
-        <a href = "/login">LOGIN</a>
-        <a href = "/login/">ADMIN</a>
+        <a href="{% url 'shop:view_item'%}">Home</a>
+        <a href="{% url 'shop:add_item_to_cart'%}">Cart</a>
+        <a href = "{% url 'account:register' %}">Signup</a>
+        <a href = "{% url 'account:login'%}">LOGIN</a>
+        <a href = "{% url 'account:login'%}">ADMIN</a>
         {% endblock %}
     </div>
     <div id="content" name="content" class="main">
@@ -43,7 +43,7 @@
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script crossorigin="anonymous"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

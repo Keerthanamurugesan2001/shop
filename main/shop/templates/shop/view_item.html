@@ -21,7 +21,7 @@
                             <div class="input-group mb-3">
                                 <input type="text" name="quantity"  class="form-control quantity", value = 1 aria-describedby="button-addon2">
                                 <div class="input-group-append">
-                                <button type="submit" name="addcart" value="a{{product.id}}" href="add_item_to_cart/" class="btn btn-primary" onclick="change()" addtocartbtn id="button-addon2">Add cart</button></input>
+                                <button type="submit" name="addcart" value="a{{product.id}}" href="{% url 'shop:add_item_to_cart'%}" class="btn btn-primary" onclick="change()" addtocartbtn id="button-addon2">Add cart</button></input>
                                 </div>
                             </div>
                         </div>

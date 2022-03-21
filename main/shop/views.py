@@ -1,15 +1,24 @@
 from django.shortcuts import render, redirect
-import sys
+from django.urls import reverse
 
-sys.path.append('/home/softsuave/PycharmProjects/shopapp/shopmain/shop/')
 from .models import *
 from .form import *
 from django.contrib import messages
-import shutil
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
+from django.views import generic
 
 # # Create your views here.
+
+
+# class IndexView(generic.ListView):
+#     template_name = 'shop/view_item.html'
+#     context_object_name = 'products'
+#
+#     def get_queryset(self):
+#         return Product.objects.all()
+#
+
 def view_item(request):
     products = Product.objects.all()
     if request.method == 'POST':
@@ -25,29 +34,28 @@ def view_item(request):
                         t.quantity = product_qty
                         t.save()
                         messages.add_message(request, messages.SUCCESS, 'Product Added successfully')
-                        return redirect('/')
+                        return HttpResponseRedirect(reverse('shop:view_item'))
                     else:
                         if product_check.quantity == 0:
                             messages.add_message(request, messages.WARNING,
                                                  'Out of stock')
-                            return redirect('/')
+                            return HttpResponseRedirect(reverse('shop:view_item'))
                         else:
                             messages.add_message(request, messages.WARNING,
                                                  'Only ' + str(product_check.quantity) + ' is available')
-                            return redirect('/')
+                            return HttpResponseRedirect(reverse('shop:view_item'))
                 else:
                     print()
                     Cart.objects.create(product=product_check, user=request.user, quantity=product_qty)
 
                     messages.add_message(request, messages.SUCCESS, 'Product Added successfully')
-                    return redirect('/')
+                    return HttpResponseRedirect(reverse('shop:view_item'))
             else:
                 messages.add_message(request, messages.WARNING, 'No such product found')
-                return redirect('/')
+                return HttpResponseRedirect(reverse('shop:view_item'))
         else:
             messages.add_message(request, messages.WARNING, "your'e admin please Login to continue")
-            return redirect('/login/')
-        return render(request, 'shop/add_item_to_cart.html', {})
+            return HttpResponseRedirect(reverse('account:login'))
     uname = request.user
     return render(request, "shop/view_item.html", {'products': products, 'uname': uname})
 
@@ -65,7 +73,8 @@ def admin_view(request):
                 messages.add_message(request, messages.WARNING, "Product deleted successfully")
             elif request.POST.get("edit"):
                 i = int(request.POST.get('getedvalue'))
-                return HttpResponseRedirect('/%d' % i)
+                # return HttpResponseRedirect('/%d' % i)
+                return HttpResponseRedirect(reverse('shop:update_stock', args=(i,)))
         else:
             messages.add_message(request, messages.WARNING, "Your'e not admin")
 
@@ -90,7 +99,7 @@ def add_stock(request):
 
                 s.save()
                 messages.add_message(request, messages.SUCCESS, "Product added successfully")
-                return redirect('/admin_view')
+                return HttpResponseRedirect(reverse('shop:admin_view'))
         else:
             messages.add_message(request, messages.WARNING, "Your'e not admin")
     else:
@@ -118,7 +127,6 @@ def add_item_to_cart(request):
                 t.quantity=0
                 t.save()
                 messages.add_message(request, messages.SUCCESS, "Your'e BUY SUCCESSFULLY")
-                redirect('/add_item_to_cart')
         else:
             messages.add_message(request, messages.WARNING, "Your'e admin you can't change this stuff")
     else:
@@ -167,7 +175,7 @@ def update_stock(request, id):
                     item.quantity = quantity
                     item.save()
                 messages.add_message(request, messages.SUCCESS, "item updated")
-                return redirect('/admin_view')
+                return HttpResponseRedirect(reverse('shop:admin_view'))
         else:
             messages.add_message(request, messages.WARNING, "Your'e not admin")
     else:
